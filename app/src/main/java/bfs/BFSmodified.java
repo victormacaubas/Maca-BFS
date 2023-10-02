@@ -25,8 +25,6 @@ public class BFSmodified {
         this.queue = new LinkedList<>();
     }
 
-
-
     public void BFS_start(int s) {
 
         for (int u = 0; u < graph.size(); u++) {
