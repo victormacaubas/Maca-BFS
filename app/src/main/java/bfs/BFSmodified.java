@@ -10,7 +10,7 @@ public class BFSmodified {
     private static final int GRAY = 0;
     private static final int BLACK = 1;
 
-    public Integer[] before;
+    public Integer[] pred;
     public int[] color;
     public int[] level;
     private Queue<Integer> queue;
@@ -21,22 +21,49 @@ public class BFSmodified {
         int graphSize = graph.size();
         this.color = new int[graphSize];
         this.level = new int[graphSize];
-        this.before = new Integer[graphSize];
+        this.pred = new Integer[graphSize];
         this.queue = new LinkedList<>();
     }
 
-    public void BFS_start(int s) {
+    public void printShortestDistance(int source, int dest) {
+
+        if (BFS_startShortest(source, dest) == false) {
+            System.out.println("Given source and destination are not connected");
+
+            return;
+        }
+
+        LinkedList<Integer> path = new LinkedList<Integer>();
+        int crawl = dest;
+        path.add(crawl);
+
+        while (pred[crawl] != -1) {
+            path.add(pred[crawl]);
+            crawl = pred[crawl];
+        }
+
+        System.out.println("Shortest path length is: " + level[dest]);
+
+        // Print path
+        System.out.println("Path is ::");
+        for (int i = path.size() - 1; i >= 0; i--) {
+            System.out.print(path.get(i) + " ");
+        }
+
+    }
+
+    public boolean BFS_startShortest(int source, int dest) {
 
         for (int u = 0; u < graph.size(); u++) {
             color[u] = WHITE;
-            level[u] = -1;
-            before[u] = null;
+            level[u] = Integer.MAX_VALUE;
+            pred[u] = -1;
 
         }
 
-        color[s] = GRAY;
-        level[s] = 0;
-        queue.add(s);
+        color[source] = GRAY;
+        level[source] = 0;
+        queue.add(source);
 
         while (queue.size() != 0) {
             int u = queue.poll();
@@ -45,14 +72,21 @@ public class BFSmodified {
                 if (color[v] == WHITE) {
                     color[v] = GRAY;
                     level[v] = level[u] + 1;
-                    before[v] = u;
+                    pred[v] = u;
                     queue.add(v);
+
+                    if (v == dest) {
+                        color[u] = BLACK;
+                        return true;
+                    }
                 }
             }
 
             color[u] = BLACK;
 
         }
+
+        return false;
 
     }
 
